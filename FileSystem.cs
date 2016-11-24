@@ -143,9 +143,10 @@ namespace RAAFS
 
             while (_writeableCollections.Count < MAX_CONCURRENCY)
             {
-                var key = Guid.NewGuid();
-                _logger.LogInformation("Creating write collection {0}", key);
-                _writeableCollections.Add(new FileCollection(_path, key));
+                var collection = new FileCollection(_path, Guid.NewGuid());
+                _logger.LogInformation("Creating write collection {0}", collection.Key);
+                _writeableCollections.Add(new FileCollection(_path, collection.Key));
+                _fileCollections.TryAdd(collection.Key, collection);
             }
 
         }
@@ -205,9 +206,10 @@ namespace RAAFS
                         _writeableCollections.Add(collection);
                     else
                     {
-                        var key = Guid.NewGuid();
-                        _logger.LogInformation("Creating write collection {0}", key);
-                        _writeableCollections.Add(new FileCollection(_path, key));
+                        collection = new FileCollection(_path, Guid.NewGuid());
+                        _logger.LogInformation("Creating write collection {0}", collection.Key);
+                        _writeableCollections.Add(new FileCollection(_path, collection.Key));
+                        _fileCollections.TryAdd(collection.Key, collection);
                     }
                 });
             }
